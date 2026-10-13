@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
-flourite_kernel_inputs := $(shell find -L $(TARGET_KERNEL_SOURCE) $(FLOURITE_KERNEL_MODULE_SOURCE) $(FLOURITE_KERNEL_DT_SOURCE) $(FLOURITE_KERNEL_BUILD) external/dtc system/libufdt -name .git -prune -o -type f -print)
+flourite_kernel_repos := $(TARGET_KERNEL_SOURCE) $(FLOURITE_KERNEL_MODULE_SOURCE) $(FLOURITE_KERNEL_DT_SOURCE) $(FLOURITE_KERNEL_BUILD) external/dtc system/libufdt
+# Ignore leftover build products in source checkouts; modules use git archive.
+flourite_kernel_inputs := $(foreach path,$(flourite_kernel_repos),$(addprefix $(path)/,$(shell git -C $(path) ls-files)))
 flourite_kernel_inputs += vendor/lineage/build/tools/merge_dtbs.py
 flourite_kernel_outputs := $(TARGET_PREBUILT_KERNEL) $(FLOURITE_SOURCE_DIST)/dtb.img $(BOARD_PREBUILT_DTBOIMAGE) $(BOARD_SYSTEM_KERNEL_MODULES) $(BOARD_VENDOR_KERNEL_MODULES) $(BOARD_VENDOR_RAMDISK_KERNEL_MODULES)
 flourite_kernel_stamp := $(FLOURITE_SOURCE_KERNEL_OUT)/.built
