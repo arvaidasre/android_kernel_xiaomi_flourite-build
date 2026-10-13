@@ -1,0 +1,18 @@
+{
+  "kernel": {
+    "path": "../sm7635",
+    "revision": "73685ed2adb951bc739cfa90553b54468259a717",
+    "repository": "https://github.com/xiaomi-flourite-sm7635/android_kernel_xiaomi_sm7635"
+  },
+  "modules": {
+    "path": "../flourite-source-modules",
+    "revision": "979db6e4cd6b460904ef4adfce259e92e46821b9",
+    "branch": "flourite-full-source"
+  },
+  "clang": "r487747c",
+  "config": [
+    "gki_defconfig",
+    "vendor/pineapple_GKI.config",
+    "vendor/flourite_GKI.config"
+  ]
+}
