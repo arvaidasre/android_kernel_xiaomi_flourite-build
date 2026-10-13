@@ -4,12 +4,14 @@ set -Eeuo pipefail
 here=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 export FLOURITE_KERNEL_SRC=${FLOURITE_KERNEL_SRC:-"$here/../sm7635"}
 export FLOURITE_MODULES_SRC=${FLOURITE_MODULES_SRC:-"$here/../flourite-source-modules"}
+export FLOURITE_DTS_SRC=${FLOURITE_DTS_SRC:-"$here/../sm7635-devicetrees"}
 : "${FLOURITE_CLANG:?Set the clang-r487747c directory}"
 : "${FLOURITE_BUILD_TOOLS:?Set the matching kernel build-tools directory}"
 : "${FLOURITE_MUSL_SYSROOT:?Set the aarch64-unknown-linux-musl sysroot}"
+: "${FLOURITE_ANDROID_TOP:?Set the Lineage source root}"
 export FLOURITE_CLANG FLOURITE_BUILD_TOOLS FLOURITE_MUSL_SYSROOT
 export PATH="$FLOURITE_CLANG/bin:$FLOURITE_BUILD_TOOLS/bin:$PATH"
-python3 "$here/check-inputs.py"
+"${FLOURITE_PYTHON:-python3}" "$here/check-inputs.py"
 if [[ ${1:-} == --check ]]; then exit 0; fi
 if [[ $# != 1 ]]; then
     echo "Usage: bash build.sh --check | NEW_OUTPUT_DIRECTORY" >&2
@@ -29,7 +31,15 @@ export KBUILD_BUILD_TIMESTAMP
 KBUILD_BUILD_TIMESTAMP=$(git -C "$FLOURITE_KERNEL_SRC" show -s --format=%cD HEAD)
 unset KBUILD_MIXED_TREE KBUILD_OUTPUT KCONFIG_CONFIG
 source "$here/common.sh"
-mapfile -t configs < <(python3 -c 'import json,sys; print("\n".join(json.load(open(sys.argv[1]))["config"]))' "$here/sources.json")
+dt_link="$FLOURITE_KERNEL_SRC/arch/arm64/boot/dts/vendor"
+if [[ ! -e $dt_link && ! -L $dt_link ]]; then
+    ln -s "$(realpath "$FLOURITE_DTS_SRC")" "$dt_link"
+fi
+[[ $(realpath "$dt_link") == $(realpath "$FLOURITE_DTS_SRC") ]] || {
+    echo 'Kernel DT link points to a different source tree' >&2
+    exit 1
+}
+mapfile -t configs < <("${FLOURITE_PYTHON:-python3}" -c 'import json,sys; print("\n".join(json.load(open(sys.argv[1]))["config"]))' "$here/sources.json")
 make "${kernel_flags[@]}" "${configs[@]}"
 "$FLOURITE_KERNEL_SRC/scripts/config" --file "$FLOURITE_KERNEL_OUT/.config" \
     -e SECURITY_SELINUX_DEVELOP -e IKCONFIG -e IKCONFIG_PROC
@@ -39,5 +49,6 @@ while IFS= read -r component; do
     [[ -n $component && $component != \#* ]] || continue
     bash "$here/build-module.sh" "$component"
 done < "$here/components.list"
-python3 "$here/stage.py" --kernel-out "$FLOURITE_KERNEL_OUT" \
-    --modules "$work/modules" --clang "$FLOURITE_CLANG" --output "$work/dist"
+bash "$here/build-dt.sh" "$work/dt"
+"${FLOURITE_PYTHON:-python3}" "$here/stage.py" --kernel-out "$FLOURITE_KERNEL_OUT" \
+    --modules "$work/modules" --clang "$FLOURITE_CLANG" --dt "$work/dt" --output "$work/dist"

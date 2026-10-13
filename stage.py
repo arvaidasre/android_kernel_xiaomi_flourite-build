@@ -121,6 +121,7 @@ def main():
     parser.add_argument('--kernel-out', type=Path, required=True)
     parser.add_argument('--modules', type=Path, required=True)
     parser.add_argument('--clang', type=Path)
+    parser.add_argument('--dt', type=Path)
     parser.add_argument('--output', type=Path)
     parser.add_argument('--check-only', action='store_true')
     args = parser.parse_args()
@@ -130,6 +131,8 @@ def main():
     if args.check_only:
         return
     require(args.output is not None and args.clang is not None, '--output and --clang required')
+    require(args.dt is not None and all((args.dt / name).is_file()
+            for name in ('dtb.img', 'dtbo.img')), 'Missing source-built device trees')
     output = args.output.resolve()
     require(not output.exists(), 'Refusing to overwrite an existing distribution')
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -150,8 +153,10 @@ def main():
         for source, dest in [('arch/arm64/boot/Image', 'Image'), ('System.map', 'System.map'),
                              ('.config', 'kernel.config'), ('certs/signing_key.x509', 'module-cert.x509')]:
             shutil.copyfile(kernel / source, stage / dest)
-        for filename in ('BoardConfigKernel.mk', 'sources.json'):
+        for filename in ('sources.json',):
             shutil.copyfile(here / filename, stage / filename)
+        for filename in ('dtb.img', 'dtbo.img'):
+            shutil.copyfile(args.dt / filename, stage / filename)
         (stage / 'kernel.release').write_text(release + '\n')
         hashes = [hashlib.sha256(p.read_bytes()).hexdigest() + '  ' + str(p.relative_to(stage))
                   for p in sorted(stage.rglob('*')) if p.is_file()]
