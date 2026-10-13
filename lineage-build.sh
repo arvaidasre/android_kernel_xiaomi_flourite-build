@@ -8,6 +8,8 @@ output=$(realpath -m "${2:?Kernel output directory required}")
     exit 2
 }
 here="$top/kernel/xiaomi/flourite-build"
+export PATH="$top/prebuilts/build-tools/linux-x86/bin:$top/prebuilts/build-tools/path/linux-x86:$PATH"
+export BISON_PKGDATADIR="$top/prebuilts/build-tools/common/bison"
 export FLOURITE_KERNEL_SRC="$top/kernel/xiaomi/sm7635"
 export FLOURITE_MODULES_SRC="$top/kernel/xiaomi/flourite-source-modules"
 export FLOURITE_DTS_SRC="$top/kernel/xiaomi/sm7635-devicetrees"
@@ -23,7 +25,7 @@ if [[ ${3:-} == --check ]]; then exit 0; fi
 [[ $# == 2 ]] || exit 2
 mkdir -p "$output/work" "$output/dist"
 exec 9>"$output/.build.lock"
-flock 9
+/usr/bin/flock 9
 work=$(mktemp -d "$output/work/build.XXXXXX")
 bash "$here/build.sh" "$work/output"
 (cd "$work/output/dist" && sha256sum --status -c SHA256SUMS)
