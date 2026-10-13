@@ -1,38 +1,52 @@
 # Flourite source kernel
 
-Pinned Xiaomi 6.1 kernel and external modules for the unified LineageOS device.
-The kernel and all packaged `.ko` files are built together; there is no stock
-module fallback. DTB/DTBO remain the tested OS3.0.306 firmware versions.
-Proprietary userspace and device firmware are still required.
+Google Android 14 ACK 6.1 with Flourite drivers and device trees. The kernel,
+all packaged modules, DTB and DTBO are compiled together. There is no Xiaomi
+prebuilt kernel or stock module/device-tree fallback. Proprietary userspace
+and device firmware are still required.
 
-## Build
+## Lineage build
 
-Use the revisions in `sources.json`. The module branch is currently local;
-it must be published separately before a fresh remote checkout can reproduce it.
-Dependencies: make, Python 3 with pyelftools, Git, tar, flex, bison, OpenSSL
-development headers, Android Clang r487747c, kernel build-tools (pahole 1.23),
-and the Lineage build-tools aarch64 musl sysroot.
+Use the revisions in `sources.json` at these checkout paths:
+
+- `kernel/xiaomi/sm7635`
+- `kernel/xiaomi/flourite-source-modules`
+- `kernel/xiaomi/sm7635-devicetrees`
+- `kernel/xiaomi/flourite-build` (this repository)
+
+Install Android Clang r487747c at `kernel/prebuilts/clang-r487747c` and the
+matching kernel build-tools (pahole 1.23) at `kernel/prebuilts/build-tools-2023`.
+The Lineage checkout supplies `external/dtc`, `system/libufdt`, the overlay
+merge tool and the build-tools aarch64 musl sysroot. Host dependencies include
+make, Git, tar, flex, bison, OpenSSL development headers and Python 3 with
+pyelftools available to `/usr/bin/python3`.
+
+The device tree includes `BoardConfigLineage.mk` and `lineage.mk`. Normal
+`m bacon` builds the kernel bundle before consuming its outputs. `m kernel`
+builds the same bundle without producing an OTA. Outputs are under
+`out/target/product/flourite/obj/FLOURITE_KERNEL/dist`.
+
+Android creates boot/recovery images and module dependency metadata using
+normal init and SELinux enforcing. The build installs no diagnostic logger,
+permissive policy or private signing key. Keep input repositories clean and
+update `sources.json` when committing a kernel, module or device-tree change.
+
+## Standalone build
 
 ```sh
 export FLOURITE_CLANG=/path/to/clang-r487747c
 export FLOURITE_BUILD_TOOLS=/path/to/kernel-build-tools
-export FLOURITE_MUSL_SYSROOT=/path/to/lineage/prebuilts/build-tools/sysroots/aarch64-unknown-linux-musl
+export FLOURITE_ANDROID_TOP=/path/to/lineage
+export FLOURITE_MUSL_SYSROOT=$FLOURITE_ANDROID_TOP/prebuilts/build-tools/sysroots/aarch64-unknown-linux-musl
 bash build.sh --check
 bash build.sh /path/to/new-kernel-output
 ```
 
-`FLOURITE_KERNEL_SRC`, `FLOURITE_MODULES_SRC` override the sibling source paths;
-`FLOURITE_JOBS` defaults to 24. Use a new output directory for each build.
-Module signatures use the matching build's generated key. Never publish that key.
+`FLOURITE_KERNEL_SRC`, `FLOURITE_MODULES_SRC` and `FLOURITE_DTS_SRC` override
+the sibling source paths. `FLOURITE_JOBS` defaults to 24. Each invocation uses
+a fresh output directory and verifies module architecture, symbol versions
+and dependency coverage. Device-tree overlays are merged and applied to all
+three supported base trees before packaging.
 
-## Lineage integration
-
-After building, verify `dist/SHA256SUMS` and set
-`FLOURITE_SOURCE_KERNEL_DIST := /path/to/new-kernel-output/dist` in a local
-BoardConfig override. The device tree's opt-in include consumes the whole bundle.
-The stock kernel remains the default until an integrated ROM has been tested.
-
-This preparation does not yet compile the kernel automatically during `m bacon`.
-Android creates its own boot/recovery images and dependency metadata from the
-distribution, retaining normal init and SELinux enforcing. No diagnostic init,
-logger, permissive policy, flash script or private signing key is installed.
+Verify `dist/SHA256SUMS` before using standalone outputs. Module signatures
+use the matching build's generated key; never publish that private key.
