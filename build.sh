@@ -28,7 +28,9 @@ git -C "$FLOURITE_MODULES_SRC" archive HEAD | tar -x -C "$work/modules"
 export KBUILD_BUILD_USER=lineage KBUILD_BUILD_HOST=flourite
 export KBUILD_BUILD_VERSION=1
 export KBUILD_BUILD_TIMESTAMP
-KBUILD_BUILD_TIMESTAMP=$(git -C "$FLOURITE_KERNEL_SRC" show -s --format=%cD HEAD)
+# Numeric UTC dates work with both GNU and Android's Toybox date/tar.
+kernel_commit_time=$(git -C "$FLOURITE_KERNEL_SRC" show -s --format=%ct HEAD)
+KBUILD_BUILD_TIMESTAMP=$(LC_ALL=C date -u -d "@$kernel_commit_time" '+%Y-%m-%d %H:%M:%S +0000')
 unset KBUILD_MIXED_TREE KBUILD_OUTPUT KCONFIG_CONFIG
 source "$here/common.sh"
 dt_link="$FLOURITE_KERNEL_SRC/arch/arm64/boot/dts/vendor"
