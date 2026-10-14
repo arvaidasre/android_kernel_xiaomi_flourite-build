@@ -2,17 +2,20 @@
   "kernel": {
     "path": "../sm7635",
     "revision": "6c98023d418e91fab7ad9a75b54526bce3b96965",
-    "repository": "https://github.com/xiaomi-flourite-sm7635/android_kernel_xiaomi_sm7635"
+    "repository": "https://github.com/xiaomi-flourite-sm7635/android_kernel_xiaomi_sm7635",
+    "branch": "lineage-24.0"
   },
   "modules": {
     "path": "../flourite-source-modules",
     "revision": "6c873ffa291512526f0413a81dcbf7b2889e0c2f",
+    "repository": "https://github.com/xiaomi-flourite-sm7635/android_kernel_xiaomi_sm7635-modules",
     "branch": "flourite-full-source"
   },
   "devicetrees": {
     "path": "../sm7635-devicetrees",
     "revision": "683581aa2f5639883ca397d0bb4ae05c42812934",
-    "branch": "flourite-source-dt"
+    "repository": "https://github.com/xiaomi-flourite-sm7635/android_kernel_xiaomi_sm7635-devicetrees",
+    "branch": "lineage-24.0"
   },
   "clang": "r487747c",
   "config": [

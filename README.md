@@ -14,6 +14,10 @@ Use the revisions in `sources.json` at these checkout paths:
 - `kernel/xiaomi/sm7635-devicetrees`
 - `kernel/xiaomi/flourite-build` (this repository)
 
+Copy `manifest.xml` to `.repo/local_manifests/flourite-kernel.xml` and sync
+those four paths. Replace any existing manifest entries for the same paths.
+Keep the manifest revisions aligned with `sources.json` when updating inputs.
+
 Install Android Clang r487747c at `kernel/prebuilts/clang-r487747c` and the
 matching kernel build-tools (pahole 1.23) at `kernel/prebuilts/build-tools-2023`.
 The Lineage checkout supplies `external/dtc`, `system/libufdt`, the overlay
