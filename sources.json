@@ -6,7 +6,7 @@
   },
   "modules": {
     "path": "../flourite-source-modules",
-    "revision": "97128ba206713e4b1ef379330371bbab45033b28",
+    "revision": "6c873ffa291512526f0413a81dcbf7b2889e0c2f",
     "branch": "flourite-full-source"
   },
   "devicetrees": {
