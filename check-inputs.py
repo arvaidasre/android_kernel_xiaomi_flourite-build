@@ -24,7 +24,7 @@ for name, env in (('kernel', 'FLOURITE_KERNEL_SRC'), ('modules', 'FLOURITE_MODUL
 clang = Path(os.environ['FLOURITE_CLANG'])
 if f'based on {lock["clang"]}' not in (clang / 'AndroidVersion.txt').read_text():
     raise SystemExit('Unexpected Clang version')
-for tool in ('clang', 'ld.lld', 'llvm-strip'):
+for tool in ('clang', 'ld.lld', 'llvm-ar', 'llvm-strip'):
     if not os.access(clang / 'bin' / tool, os.X_OK):
         raise SystemExit(f'Missing compiler tool: {tool}')
 for tool in ('pahole', 'depmod'):
