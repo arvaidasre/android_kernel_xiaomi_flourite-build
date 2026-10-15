@@ -12,5 +12,5 @@
            revision="6c873ffa291512526f0413a81dcbf7b2889e0c2f" upstream="flourite-full-source" />
   <project path="kernel/xiaomi/sm7635-devicetrees"
            name="android_kernel_xiaomi_sm7635-devicetrees" remote="flourite-kernel"
-           revision="683581aa2f5639883ca397d0bb4ae05c42812934" upstream="lineage-24.0" />
+           revision="c012c642ccb6e63a603304e04d59d25dc566e86a" upstream="lineage-24.0" />
 </manifest>
