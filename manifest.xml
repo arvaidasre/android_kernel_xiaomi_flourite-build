@@ -6,10 +6,10 @@
            revision="lineage-24.0" />
   <project path="kernel/xiaomi/sm7635"
            name="android_kernel_xiaomi_sm7635" remote="flourite-kernel"
-           revision="cb2e28d47182f1fe0024c4a0fa7804f5aba8d2b9" upstream="lineage-24.0" />
+           revision="24efbea26517ad7259f8676849f41c14e3394399" upstream="lineage-24.0" />
   <project path="kernel/xiaomi/flourite-source-modules"
            name="android_kernel_xiaomi_sm7635-modules" remote="flourite-kernel"
-           revision="6c873ffa291512526f0413a81dcbf7b2889e0c2f" upstream="flourite-full-source" />
+           revision="79eb13f92bdf4c97c7d21ece5762d858079e15ad" upstream="flourite-full-source" />
   <project path="kernel/xiaomi/sm7635-devicetrees"
            name="android_kernel_xiaomi_sm7635-devicetrees" remote="flourite-kernel"
            revision="c012c642ccb6e63a603304e04d59d25dc566e86a" upstream="lineage-24.0" />
