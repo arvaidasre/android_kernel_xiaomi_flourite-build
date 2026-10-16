@@ -1,7 +1,7 @@
 {
   "kernel": {
     "path": "../sm7635",
-    "revision": "24efbea26517ad7259f8676849f41c14e3394399",
+    "revision": "47832ca1de6ac1ae067f8e18b24b38b185d2d4ef",
     "repository": "https://github.com/xiaomi-flourite-sm7635/android_kernel_xiaomi_sm7635",
     "branch": "lineage-24.0"
   },

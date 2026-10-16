@@ -6,7 +6,7 @@
            revision="lineage-24.0" />
   <project path="kernel/xiaomi/sm7635"
            name="android_kernel_xiaomi_sm7635" remote="flourite-kernel"
-           revision="24efbea26517ad7259f8676849f41c14e3394399" upstream="lineage-24.0" />
+           revision="47832ca1de6ac1ae067f8e18b24b38b185d2d4ef" upstream="lineage-24.0" />
   <project path="kernel/xiaomi/flourite-source-modules"
            name="android_kernel_xiaomi_sm7635-modules" remote="flourite-kernel"
            revision="79eb13f92bdf4c97c7d21ece5762d858079e15ad" upstream="flourite-full-source" />
